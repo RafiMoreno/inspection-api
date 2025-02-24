@@ -1,9 +1,22 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
+	"inspection-api/initializers"
+	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
+
+func init() {
+	initializers.SetupDatabase()
+	
+	if initializers.DB == nil {
+        log.Fatal("Database connection is not initialized")
+    }
+
+	initializers.MigrateDB(initializers.DB)
+}
 
 func main() {
 	r := gin.Default()
