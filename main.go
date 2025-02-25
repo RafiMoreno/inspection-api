@@ -2,14 +2,15 @@ package main
 
 import (
 	"inspection-api/initializers"
+	"inspection-api/services"
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func init() {
 	initializers.SetupDatabase()
+	initializers.SetupCloudinary()
 	
 	if initializers.DB == nil {
         log.Fatal("Database connection is not initialized")
@@ -21,11 +22,10 @@ func init() {
 func main() {
 	r := gin.Default()
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Hello, Inspection API!",
-		})
-	})
+	endpoint := r.Group("/api")
+	{
+		endpoint.POST("/upload", services.UploadImages)
+	}
 
 	r.Run(":8080") 
 }
